@@ -22,9 +22,9 @@ function addEventListeners(serverSocket: SocketIO.Server) {
 }
 
 function addClientEventListeners(socket: SocketIO.Socket) {
-  socket.on('msg', (msg) => {
+  socket.on('msg', (msg, type = 'text') => {
     const { messages } = getDatabase();
-    const message = messages.add({ content: msg });
+    const message = messages.add({ content: msg, type });
     socket.server.sockets.emit('msg', message);
   })
   socket.on('join', (room) => {

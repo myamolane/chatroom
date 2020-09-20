@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { Input } from 'antd';
 import { useControllableValue } from 'ahooks';
 import TextArea from 'antd/lib/input/TextArea';
+import { socket } from '@/utils/socket';
 import upload from '@/utils/upload';
 import Uploader from '../uploader';
 import styles from './index.less';
@@ -17,10 +18,21 @@ interface RichInputProps {
   value?: string;
 }
 
+function sendImageMsg(path) {
+  socket.emit('msg', path, 'image');
+}
+
+function onUpload(uploadResult) {
+  const { code, data } = uploadResult;
+  if (code === 0) {
+    sendImageMsg(data);
+  }
+}
+
 function RichInputToolbar() {
   return (
     <div className={styles.toolbar}>
-      <Uploader>
+      <Uploader onSuccess={file => onUpload(file.response)}>
         <PictureOutlined onClick={() => {}} />
       </Uploader>
     </div>
@@ -71,7 +83,7 @@ export function RichTextarea(props: RichInputProps) {
       const filesLength = clipboardData.files.length;
       for (let i = 0; i < filesLength; i += 1) {
         const file = clipboardData.files[i];
-        upload(file);
+        upload(file).then(sendImageMsg);
       }
       if (filesLength) {
         e.preventDefault();

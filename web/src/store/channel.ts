@@ -1,11 +1,7 @@
 import { createModel } from 'hox';
 import { UseModel } from 'hox/types';
 import { useState } from 'react';
-
-export interface IMessage {
-  content: string;
-  user: string;
-}
+import { IMessage } from 'shared/interface/model';
 
 interface IUseChannel {
   messages: IMessage[];
