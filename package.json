@@ -19,7 +19,7 @@
     ]
   },
   "scripts": {
-    "dev": "concurrently 'cd server && yarn start' 'cd web && yarn start'",
+    "dev": "concurrently 'cd server && yarn dev' 'cd web && yarn start'",
     "build": "concurrently 'cd server && yarn build' 'cd web && yarn build' 'cd shared && yarn build'"
   },
   "dependencies": {
