@@ -11,6 +11,13 @@ export interface IMessage extends BaseDataModel {
 }
 
 export interface IUser extends BaseDataModel {
+  id?: string;
+  name: string;
+}
+
+export interface IChatroom extends BaseDataModel {
   id: string;
+  messages: IMessage[];
+  users: IUser[];
   name: string;
 }

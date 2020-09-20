@@ -1,3 +1,4 @@
+import { IChatroom, IMessage } from 'shared/interface/model';
 import * as SocketIO from 'socket.io';
 import { getDatabase } from './app/database';
 
@@ -9,9 +10,6 @@ export function initSocket(app) {
 }
 
 function addEventListeners(serverSocket: SocketIO.Server) {
-  serverSocket.on('join', (_, data) => {
-    console.log('data:', data);
-  })
   serverSocket.on('connect', (socket) => {
     serverSocket.sockets.emit('hello');
     addClientEventListeners(socket);
@@ -22,17 +20,50 @@ function addEventListeners(serverSocket: SocketIO.Server) {
 }
 
 function addClientEventListeners(socket: SocketIO.Socket) {
-  socket.on('msg', (msg, type = 'text') => {
-    const { messages } = getDatabase();
-    const message = messages.add({ content: msg, type });
-    socket.server.sockets.emit('msg', message);
-  })
-  socket.on('join', (room) => {
-    console.log('room:', room);
+  socket.on('msg', (msg: IMessage, chatroomId) => {
+    // if (!socket.rooms[chatroomId]) {
+    //   console.log('not in rooms');
+    //   return;
+    // }
+    const { chatrooms } = getDatabase();
+
+    const chatroom = chatrooms.findOne(chatroomId);
+    if (!chatroom) {
+      console.error(`chatroom ${chatroomId} not exist`);
+      return;
+    }
+    const newMessagee = { ...msg, type: 'text' || msg.type };
+    chatroom.messages.push(newMessagee);
+    chatrooms.update(chatroom);
+    socket.server.emit('msg', newMessagee, chatroomId);
+    // socket.server.to(chatroomId).emit('msg', newMessagee, chatroomId);
   })
   socket.on('register', (id, name) => {
     const { users } = getDatabase();
-    const user = users.addOrUpdate({ id, name });
+    const user = users.add({ id, name });
     socket.server.sockets.emit('register', user);
   })
+  socket.on('join', (user, chatroomId = 'default') => {
+    const { users, chatrooms } = getDatabase();
+    const { id } = user;
+    const userData = users.findOne(id);
+    if (!userData) {
+      console.log('user not registered');
+      return;
+    }
+    const chatroom: IChatroom = chatrooms.findOne(chatroomId);
+    const joined = !!chatroom.users.find(user => user.id === id);
+    if (joined) {
+      console.log('user joined');
+      return;
+    }
+    chatroom.users.push(user);
+    chatrooms.update(chatroom);
+    socket.join(chatroomId);
+    console.log(`${user.id} join ${chatroomId}`);
+    socket.to(chatroomId).emit('join', user, chatroom);
+  })
+  // socket.on('disconnect', () => {
+  //   socket.leaveAll();
+  // })
 }

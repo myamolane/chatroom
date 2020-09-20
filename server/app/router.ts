@@ -9,6 +9,8 @@ export default (app: Application) => {
   router.get('/api/file/upload', controller.home.index)
 
   router.get('/api/chatroom/messages', controller.chatroom.messagees)
+  router.get('/api/chatroom/users', controller.chatroom.users)
 
   router.get('/api/users/', controller.user.list)
+  router.put('/api/users/', controller.user.update)
 };

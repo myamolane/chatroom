@@ -3,6 +3,7 @@ import { Avatar, Image } from 'antd';
 import React from 'react';
 import cx from 'classnames';
 import { IMessage } from 'shared/interface/model';
+import useUserStore from '@/store/user';
 import Pop from '../pop';
 import styles from './index.less';
 
@@ -40,8 +41,9 @@ interface MessageProps {
 
 export default function Message(props: MessageProps) {
   const { message, className } = props;
-  const { content, user, type } = message;
-  const sentBySelf = false;
+  const { content, user: msgUser, type } = message;
+  const { user = { id: null } } = useUserStore();
+  const sentBySelf = msgUser === user.id;
   return (
     <div
       className={cx(
@@ -50,8 +52,8 @@ export default function Message(props: MessageProps) {
         className,
       )}
     >
-      {sentBySelf && <MessageContent arrowPosition="right" content={content} />}
-      <Avatar className={styles.avatar}>{user}</Avatar>
+      {sentBySelf && <MessageContent contentType={type} arrowPosition="right" content={content} />}
+      <Avatar className={styles.avatar}>{msgUser}</Avatar>
       {sentBySelf || <MessageContent contentType={type} content={content} />}
     </div>
   );

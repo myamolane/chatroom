@@ -1,8 +1,8 @@
-import { getUsers } from '@/api/modules/user';
 import Chatroom from '@/components/chatroom'
 import UserList from '@/components/user-list';
 import { socket } from '@/utils/socket';
 import { useEffectOnce } from 'react-use';
+import { getChatroomUsers } from '@/api/modules/chatroom';
 import React, { useCallback, useEffect, useState } from 'react'
 import { IUser } from 'shared/interface/model';
 import styles from './index.less';
@@ -10,20 +10,23 @@ import styles from './index.less';
 export default function Home() {
   const [users, setUsers] = useState<IUser[]>([]);
   const onJoin = useCallback((user) => {
-    setUsers([...users, user]);
+    const hasJoined = !!users.find(item => item.id === user.id);
+    if (!hasJoined) {
+      setUsers([...users, user]);
+    }
   }, [users]);
 
   useEffectOnce(() => {
-    getUsers().then((data) => {
+    getChatroomUsers().then((data) => {
       setUsers(data);
     })
   })
   useEffect(() => {
     socket.emit('join', 'default');
-    socket.on('register', onJoin);
+    socket.on('join', onJoin);
 
     return () => {
-      socket.off('register', onJoin);
+      socket.off('join', onJoin);
     }
   }, [onJoin]);
   return (

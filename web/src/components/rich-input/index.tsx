@@ -5,6 +5,7 @@ import { Input } from 'antd';
 import { useControllableValue } from 'ahooks';
 import TextArea from 'antd/lib/input/TextArea';
 import { socket } from '@/utils/socket';
+import { makeMessage } from '@/utils/message';
 import upload from '@/utils/upload';
 import Uploader from '../uploader';
 import styles from './index.less';
@@ -19,7 +20,7 @@ interface RichInputProps {
 }
 
 function sendImageMsg(path) {
-  socket.emit('msg', path, 'image');
+  socket.emit('msg', makeMessage(path, 'image'), 'default');
 }
 
 function onUpload(uploadResult) {

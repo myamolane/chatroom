@@ -1,11 +1,10 @@
 import { BaseDataModel, ITable } from './interface';
 
-export default function initTable<T extends BaseDataModel>(pk: string = 'id'): ITable<T> {
-  let data: T[] = [];
+export default function initTable<T extends BaseDataModel>(pk: string = 'id', initialData: T[] = []): ITable<T> {
+  let data: T[] = [...initialData];
   function add(item: T) {
     item.createdAt = Date.now();
     data.push(item);
-    console.log('data:', data);
     return item;
   }
 
@@ -28,8 +27,6 @@ export default function initTable<T extends BaseDataModel>(pk: string = 'id'): I
   }
 
   function findAll(key?: string) {
-    console.log('data:', data);
-    console.log('all:', data.filter(item => !key || item[pk] === key));
     return data.filter(item => !key || item[pk] === key);
   }
 

@@ -1,5 +1,5 @@
-import { deviceId, register } from '@/common/device';
-import { socket } from '@/utils/socket';
+import { updateUserInfo } from '@/api/modules/user';
+import useUserStore from '@/store/user';
 import { EnterOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
 import React, { useCallback, useState } from 'react';
@@ -14,11 +14,14 @@ export default function Login() {
     },
     [setName],
   );
+  const { user } = useUserStore();
   const onEnter = useCallback(() => {
-    register();
-    socket.emit('register', deviceId, name);
-  }, [name]);
-  if (deviceId) {
+    updateUserInfo({
+      ...user,
+      name,
+    })
+  }, [name, user]);
+  if (user.name) {
     return <Redirect to="/home" />;
   }
   return (
