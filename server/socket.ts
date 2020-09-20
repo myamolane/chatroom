@@ -11,7 +11,6 @@ export function initSocket(app) {
 
 function addEventListeners(serverSocket: SocketIO.Server) {
   serverSocket.on('connect', (socket) => {
-    serverSocket.sockets.emit('hello');
     addClientEventListeners(socket);
   })
   serverSocket.on('disconnect', (_) => {
