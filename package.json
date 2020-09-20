@@ -1,0 +1,28 @@
+{
+  "name": "chatroom",
+  "version": "1.0.0",
+  "description": "chatroom demo",
+  "main": "index.js",
+  "author": "myamolane <myamolane@outlook.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "shared",
+      "web",
+      "server"
+    ],
+    "nohoist": [
+      "**/egg",
+      "**/egg/**",
+      "**/@eggjs/**"
+    ]
+  },
+  "scripts": {
+    "dev": "concurrently 'cd server && yarn start' 'cd web && yarn start'",
+    "build": "concurrently 'cd server && yarn build' 'cd web && yarn build' 'cd shared && yarn build'"
+  },
+  "dependencies": {
+    "concurrently": "^5.2.0"
+  }
+}
