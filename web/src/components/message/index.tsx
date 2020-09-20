@@ -41,7 +41,7 @@ interface MessageProps {
 
 export default function Message(props: MessageProps) {
   const { message, className } = props;
-  const { content, user: msgUser, type } = message;
+  const { content, user: msgUser, userName, type } = message;
   const { user = { id: null } } = useUserStore();
   const sentBySelf = msgUser === user.id;
   return (
@@ -53,7 +53,7 @@ export default function Message(props: MessageProps) {
       )}
     >
       {sentBySelf && <MessageContent contentType={type} arrowPosition="right" content={content} />}
-      <Avatar className={styles.avatar}>{msgUser}</Avatar>
+      <Avatar className={styles.avatar}>{userName || '匿名'}</Avatar>
       {sentBySelf || <MessageContent contentType={type} content={content} />}
     </div>
   );

@@ -3,6 +3,7 @@ import { DEVICE_ID_KEY } from '@/constants';
 import { useCallback, useState } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 import { IUser } from 'shared/interface/model';
+import { getUserInfo } from '@/api/modules/user';
 
 function generateDeviceIdAndSave() {
   const id = uuidV4();
@@ -20,12 +21,18 @@ function useUser() {
       id: newId,
     });
   }, [user]);
-  // const login = useCallback(() => {
 
-  // }, []);
+  const login = useCallback(async () => {
+    const userInfo = await getUserInfo(user ? user.id : storageId);
+    if (userInfo) {
+      setUser(userInfo);
+    }
+  }, [user]);
+
   return {
     register,
     user,
+    login,
   };
 }
 

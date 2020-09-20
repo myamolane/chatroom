@@ -19,7 +19,6 @@ export default function Uploader(props: React.PropsWithChildren<IUploaderProps>)
     method: 'post',
     showUploadList: false,
     onChange(info) {
-      console.log('info:', info);
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }

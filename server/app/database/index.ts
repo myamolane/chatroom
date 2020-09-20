@@ -8,12 +8,12 @@ export function getDatabase(): ITables {
     users,
     messages,
     chatrooms,
-  }
+  };
 }
 
 export function initDatabase(app) {
   app.table = {
     users,
     messages,
-  }
+  };
 }

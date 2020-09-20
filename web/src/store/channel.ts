@@ -7,14 +7,10 @@ interface IUseChannel {
   messages: IMessage[];
   append: (message: IMessage) => void;
 }
-// interface IUseChannelArgs {}
 
 export function useChannel(): IUseChannel {
   const [messages, setMessages] = useState<IMessage[]>([]);
-  // const append = useCallback((message: IMessage) => {
-  //   console.log('msg:', messages);
-  //   setMessages([...messages, message]);
-  // }, []);
+
   const append = (message: IMessage) => {
     setMessages([...messages, message]);
   };

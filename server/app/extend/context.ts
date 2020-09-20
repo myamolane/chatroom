@@ -4,6 +4,6 @@ module.exports = {
       code: 0,
       msg: null,
       data,
-    }
-  }
-}
+    };
+  },
+};

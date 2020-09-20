@@ -1,5 +1,5 @@
-import { getDatabase } from "../database";
+import { getDatabase } from '../database';
 
 module.exports = {
   table: getDatabase(),
-}
+};

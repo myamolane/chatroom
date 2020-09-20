@@ -10,38 +10,32 @@ export function initSocket(app) {
 }
 
 function addEventListeners(serverSocket: SocketIO.Server) {
-  serverSocket.on('connect', (socket) => {
+  serverSocket.on('connect', socket => {
     addClientEventListeners(socket);
-  })
-  serverSocket.on('disconnect', (_) => {
-    console.log('disconnect');
-  })
+  });
 }
 
 function addClientEventListeners(socket: SocketIO.Socket) {
   socket.on('msg', (msg: IMessage, chatroomId) => {
-    // if (!socket.rooms[chatroomId]) {
-    //   console.log('not in rooms');
-    //   return;
-    // }
-    const { chatrooms } = getDatabase();
+    const { chatrooms, users } = getDatabase();
 
     const chatroom = chatrooms.findOne(chatroomId);
     if (!chatroom) {
       console.error(`chatroom ${chatroomId} not exist`);
       return;
     }
-    const newMessagee = { ...msg, type: 'text' || msg.type };
+    const user = users.findOne(msg.user);
+    const newMessagee = { ...msg, type: msg.type || 'text', userName: user.name };
     chatroom.messages.push(newMessagee);
     chatrooms.update(chatroom);
     socket.server.emit('msg', newMessagee, chatroomId);
-    // socket.server.to(chatroomId).emit('msg', newMessagee, chatroomId);
-  })
-  socket.on('register', (id, name) => {
+  });
+  socket.on('register', id => {
     const { users } = getDatabase();
-    const user = users.add({ id, name });
+    const userData = users.findOne(id);
+    const user = users.addOrUpdate({ id, ...userData });
     socket.server.sockets.emit('register', user);
-  })
+  });
   socket.on('join', (user, chatroomId = 'default') => {
     const { users, chatrooms } = getDatabase();
     const { id } = user;
@@ -51,18 +45,18 @@ function addClientEventListeners(socket: SocketIO.Socket) {
       return;
     }
     const chatroom: IChatroom = chatrooms.findOne(chatroomId);
-    const joined = !!chatroom.users.find(user => user.id === id);
+    const joined = !!chatroom.users.find(userId => user.id === userId);
     if (joined) {
       console.log('user joined');
       return;
     }
-    chatroom.users.push(user);
+    chatroom.users.push(id);
     chatrooms.update(chatroom);
     socket.join(chatroomId);
     console.log(`${user.id} join ${chatroomId}`);
-    socket.to(chatroomId).emit('join', user, chatroom);
-  })
-  // socket.on('disconnect', () => {
-  //   socket.leaveAll();
-  // })
+    socket.to(chatroomId).emit('join', userData, chatroom);
+  });
+  socket.on('disconnect', () => {
+    socket.leaveAll();
+  });
 }

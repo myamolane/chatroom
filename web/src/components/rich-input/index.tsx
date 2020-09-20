@@ -44,6 +44,7 @@ export function RichTextarea(props: RichInputProps) {
   const { onSubmit, className, inputClassName } = props;
   const [value, setValue] = useControllableValue<string>(props);
   const ref = useRef<TextArea>(null);
+  const inComposition = useRef<boolean>(false);
   const getTextareaInstance = useCallback(() => {
     return ref.current?.resizableTextArea.textArea;
   }, []);
@@ -51,6 +52,9 @@ export function RichTextarea(props: RichInputProps) {
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter') {
         if (!e.altKey) {
+          if (inComposition.current) {
+            return;
+          }
           e.preventDefault();
           if (onSubmit) {
             onSubmit(value);
@@ -93,18 +97,26 @@ export function RichTextarea(props: RichInputProps) {
     [],
   );
 
+  const onCompositionStart = useCallback(() => {
+    inComposition.current = true;
+  }, []);
+  const onCompositionEnd = useCallback(() => {
+    inComposition.current = false;
+  }, []);
   return (
     <div className={cx(styles.richInput, className)}>
       <RichInputToolbar />
       <Input.TextArea
-        onPaste={handlePaste}
         autoSize={{ minRows: 5, maxRows: 5 }}
         ref={ref}
-        onKeyDown={handleKeyDown}
-        onChange={onChange}
         value={value}
         bordered={false}
         className={cx(styles.textarea, inputClassName)}
+        onCompositionStart={onCompositionStart}
+        onCompositionEnd={onCompositionEnd}
+        onKeyDown={handleKeyDown}
+        onChange={onChange}
+        onPaste={handlePaste}
       />
     </div>
   );

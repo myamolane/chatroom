@@ -19,4 +19,4 @@ export interface BaseDataModel {
 
 export interface ITables {
   [tableKey: string]: ITable<any>
-};
+}

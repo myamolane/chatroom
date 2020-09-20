@@ -9,7 +9,7 @@ interface IUserListItemProps {
 
 export default function UserListItem(props: IUserListItemProps) {
   const { user } = props;
-  const { name } = user;
+  const { name = '匿名' } = user;
   return (
     <div className={styles.user}>
       <UserOutlined />

@@ -7,17 +7,18 @@ export interface IMessage extends BaseDataModel {
   id: string;
   content: string;
   user: string;
+  userName?: string;
   type: 'text' | 'image' | 'rich-text'
 }
 
 export interface IUser extends BaseDataModel {
-  id?: string;
+  id: string;
   name: string;
 }
 
 export interface IChatroom extends BaseDataModel {
   id: string;
   messages: IMessage[];
-  users: IUser[];
+  users: string[];
   name: string;
 }

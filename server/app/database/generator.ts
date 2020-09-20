@@ -1,7 +1,7 @@
 import { BaseDataModel, ITable } from './interface';
 
-export default function initTable<T extends BaseDataModel>(pk: string = 'id', initialData: T[] = []): ITable<T> {
-  let data: T[] = [...initialData];
+export default function initTable<T extends BaseDataModel>(pk = 'id', initialData: T[] = []): ITable<T> {
+  const data: T[] = [ ...initialData ];
   function add(item: T) {
     item.createdAt = Date.now();
     data.push(item);
@@ -33,7 +33,7 @@ export default function initTable<T extends BaseDataModel>(pk: string = 'id', in
   function addOrUpdate(item: T) {
     try {
       update(item);
-    } catch(e) {
+    } catch (e) {
       add(item);
     }
     return item;

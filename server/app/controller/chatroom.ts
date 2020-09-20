@@ -10,7 +10,14 @@ export default class ChatroomController extends Controller {
     const { chatroomId = 'default' } = ctx.query;
 
     const chatroom = await this.getChatroom(chatroomId);
-    ctx.successRes(chatroom.messages);
+    const userMap = await this.getUserMap();
+    const messages = chatroom.messages.map(message => {
+      return {
+        ...message,
+        userName: userMap[message.user].name,
+      };
+    });
+    ctx.successRes(messages);
   }
 
   public async users() {
@@ -18,6 +25,18 @@ export default class ChatroomController extends Controller {
     const { chatroomId = 'default' } = ctx.query;
 
     const chatroom = await this.getChatroom(chatroomId);
-    ctx.successRes(chatroom.users);
+
+    const userMap = await this.getUserMap();
+    const users = chatroom.users.map(id => userMap[id]).filter(user => user);
+    ctx.successRes(users);
+  }
+
+  private async getUserMap() {
+    const users = this.app.table.users.findAll();
+    const userMap = {};
+    users.forEach(user => {
+      userMap[user.id] = user;
+    });
+    return userMap;
   }
 }

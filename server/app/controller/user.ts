@@ -1,5 +1,4 @@
 import { Controller } from 'egg';
-import { v4 as uuidV4 } from 'uuid';
 
 export default class UserController extends Controller {
   public async list() {
@@ -7,26 +6,20 @@ export default class UserController extends Controller {
     ctx.successRes(this.app.table.users.findAll());
   }
 
-  public async login() {
-    const { ctx, app } = this;
-    let id = ctx.cookies['session'];
-    if (!id) {
-      id = uuidV4();
-      app.table.users.add({ id });
-    }
-    const user = app.table.users.findOne(id);
-    ctx.response.headers['Set-Cookie'] = `session=${id}`;
-    ctx.successRes({
-      code: 0,
-      data: user,
-    })
-  }
-
   public async update() {
     const { ctx, app } = this;
     const { id, name } = ctx.request.body;
-    const user = app.table.users.findOne(id);
+    const table = app.table.users;
+    const user = table.findOne(id);
     user.name = name;
+    table.update(user);
     ctx.successRes();
+  }
+
+  public async getUserInfo() {
+    const { ctx, app } = this;
+    const { id } = ctx.query;
+    const user = app.table.users.findOne(id);
+    ctx.successRes(user);
   }
 }
