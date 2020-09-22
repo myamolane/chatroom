@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { Input } from 'antd';
 import { useControllableValue } from 'ahooks';
 import TextArea from 'antd/lib/input/TextArea';
-import { socket } from '@/utils/socket';
+import socket from '@/common/shared-ws';
 import { makeMessage } from '@/utils/message';
 import upload from '@/utils/upload';
 import Uploader from '../uploader';

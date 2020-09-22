@@ -1,6 +1,6 @@
 import Chatroom from '@/components/chatroom'
 import UserList from '@/components/user-list';
-import { socket } from '@/utils/socket';
+import socket from '@/common/shared-ws';
 import { useEffectOnce } from 'react-use';
 import { getChatroomUsers } from '@/api/modules/chatroom';
 import React, { useCallback, useEffect, useState } from 'react'

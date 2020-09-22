@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
 
 const getSocket = () => {
-  const socket = io('ws://localhost:7001');;
+  const socket = io('ws://localhost:7001');
+
   return {
     on(event, cb) {
       socket.on(event, cb);

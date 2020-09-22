@@ -1,7 +1,7 @@
 import { getChatroomMessages } from '@/api/modules/chatroom';
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { IMessage } from 'shared/interface/model';
-import { socket } from '@/utils/socket';
+import socket from '@/common/shared-ws';
 import { makeMessage } from '@/utils/message';
 import useUserStore from '@/store/user';
 import Message from '../message'
@@ -52,7 +52,6 @@ export default function Chatroom() {
       <div ref={messageBlockRef} className={styles.messageBlock}>
         {messages.map(msg => <Message className={styles.message} message={msg} />)}
       </div>
-      {/* <RichInput /> */}
       <RichTextarea onSubmit={submit} className={styles.inputBlock} />
     </div>
   )
